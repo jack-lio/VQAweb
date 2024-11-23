@@ -18,9 +18,14 @@
         </div>
         <PictureInput />
       </section>
+      <!-- 問號圖標 -->
+      <router-link :to="{ path: '/guide' }" :class="$style.helpIcon">
+        <img alt="Help Icon" src="/help1.svg" />
+      </router-link>
     </main>
   </div>
 </template>
+
 <script lang="ts">
   import { defineComponent } from "vue";
   import PictureInput from "../components/PictureInput.vue";
@@ -30,6 +35,7 @@
     components: { PictureInput },
   });
 </script>
+
 <style module>
   .bb {
     position: absolute;
@@ -165,11 +171,25 @@
     line-height: normal;
     letter-spacing: normal;
   }
+  .helpIcon {
+    position: absolute;
+    bottom: 100px;
+    left: 100px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    z-index: 4;
+  }
+  .helpIcon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 
   @media screen and (max-width: 1408px) {
     .layout {
       height: auto;
-      min-height: 1080;
+      min-height: 1080px;
     }
   }
 </style>
