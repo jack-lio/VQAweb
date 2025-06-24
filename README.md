@@ -1,3 +1,5 @@
+source venv/Scripts/activate   
+
 # VQAweb
 
 A multimodal answering system based on RAG.
