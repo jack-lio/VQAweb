@@ -1,5 +1,4 @@
-#!/bin/bash
-sudo rm -drf vectorstore_db
+
 # Step 1: Build the Docker image
 docker build -t backend .
 

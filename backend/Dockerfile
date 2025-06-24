@@ -10,5 +10,5 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # The CMD will run the main.py script, which is mounted via -v
-# CMD ["python3", "demo.py"]
+#CMD ["python3", "demo1py"]
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3000"]

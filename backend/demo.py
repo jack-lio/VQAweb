@@ -1,7 +1,6 @@
-import bs4
+'''import bs4
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_ollama import OllamaEmbeddings, OllamaLLM
 from langchain_chroma import Chroma
 import logging
 import requests
@@ -105,7 +104,7 @@ class WebLoader:
 class ContentGenerator:
     def __init__(self, base_url: str = "http://localhost:11434"):
         self.llm = OllamaLLM(
-            model="llama3.2-vision",  # Using llama3.2-vision model
+            model="llama3.2",  # Using llama3.2-vision model
             base_url=base_url
         )
         self.prompt_template = PromptTemplate(

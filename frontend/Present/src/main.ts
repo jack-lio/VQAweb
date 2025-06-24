@@ -1,10 +1,11 @@
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
-import Result from "./pages/Result.vue";
+
 import Normal from "./pages/Normal.vue";
-import Guide from "./pages/Guide.vue";
-import GuideShow from "./pages/GuideShow.vue";
+//port Guide from "./pages/Guide.vue";
+//port GuideShow from "./pages/GuideShow.vue";
+//import SensorResult from "./pages/SensorResult.vue";
 import "./global.css";
 
 interface Route {
@@ -19,11 +20,13 @@ const routes: Route[] = [
     name: "Normal",
     component: Normal,
   },
-  {
+  /*{
     path: "/result",
     name: "Result",
     component: Result,
   },
+  */
+  /*
   {
     path: "/guide", 
     name: "Guide", 
@@ -34,6 +37,11 @@ const routes: Route[] = [
     name: "GuideShow",   
     component: GuideShow, 
   },
+  {
+    path: "/sensor",
+    name: "SensorResult",
+    component: SensorResult,
+  }*/
 ];
 
 const router = createRouter({
