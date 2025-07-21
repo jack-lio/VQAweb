@@ -132,17 +132,18 @@ function modelLabelToKey(label) {
   flex-direction: row;
   justify-content: center;     /* 讓左右元素集中 */
   align-items: flex-start;
-  gap: 40px;                   /* 控制兩個元件間距，可再調小一點 */
+  gap: 80px;                   /* 控制兩個元件間距，可再調小一點 */
   max-width: 1100px;           /* 最多1200px（你可以依實際需要調） */
   margin: 0 auto;              /* 水平置中 */
   padding-top: 0;   /* 這裡設 0 */
-  margin-top: 0;    /* 如果有的話 */
+  margin-top: 0; 
+   padding-bottom: 80px;   /* 如果有的話 */
 }
 /* 右下角按鈕樣式 */
 .send-btn-svg {
   position: fixed;
   right: 56px;
-  bottom: 56px;
+  bottom: 24px;
   width: 72px;
   height: 72px;
   background: none;
