@@ -2,12 +2,13 @@
   <div class="selector-area">
     <!-- 圖片選擇方式按鈕 -->
     <div class="flex-row">
+      <button @click="useSelect" :disabled="selectedImageSource === 'select'" class="switch-btn">Select Image</button>
       <select v-model="selected" class="custom-select" v-if="selectedImageSource === 'select'">
         <option v-for="img in imageOptions" :key="img.label" :value="img">
           {{ img.label }}
         </option>
       </select>
-      <button @click="useSelect" :disabled="selectedImageSource === 'select'" class="switch-btn">Select Image</button>
+      
       <button @click="useUpload" :disabled="selectedImageSource === 'upload'" class="switch-btn">Upload</button>
 
       <!-- ⛳ 自訂 upload button -->
@@ -54,15 +55,15 @@ export default {
     return {
       imageOptions: [
         { label: "Chiayi", src: "/a.jpg" },
-        { label: "Keelung", src: "/b.jpg" },
+        { label: "Annan", src: "/b.jpg" },
         { label: "Udyogamandal", src: "/c.jpg" },
         { label: "Kariavattom", src: "/d.jpg" }
       ],
       imageMeta: {
-        "/a.jpg": { "RH (%)": 80.2, "Rainfall (mm)": 0.5, "Temperature (°C)": 28, "Wind Direction (°)": 180, "Wind Speed (m/s)": 3.2 },
-        "/b.jpg": { "RH (%)": 65, "Rainfall (mm)": 0, "Temperature (°C)": 31, "Wind Direction (°)": 90, "Wind Speed (m/s)": 1.8 },
-        "/c.jpg": { "RH (%)": 72, "Rainfall (mm)": 1.2, "Temperature (°C)": 26, "Wind Direction (°)": 135, "Wind Speed (m/s)": 2.4 },
-        "/d.jpg": { "RH (%)": 60, "Rainfall (mm)": 0.1, "Temperature (°C)": 29, "Wind Direction (°)": 200, "Wind Speed (m/s)": 2.9 }
+        "/a.jpg": { "RH (%)": 83, "Rainfall (mm)": 4, "Temperature (°C)": 31.3, "Wind Direction (°)": 210, "Wind Speed (m/s)": 2.7 },
+        "/b.jpg": { "RH (%)": 92, "Rainfall (mm)": 0, "Temperature (°C)": 17.8, "Wind Direction (°)": 336, "Wind Speed (m/s)": 3 },
+        "/c.jpg": { "RH (%)": 97, "Rainfall (mm)": 3.5, "Temperature (°C)": 16.2, "Wind Direction (°)": 83, "Wind Speed (m/s)": 0.6 },
+        "/d.jpg": { "RH (%)": 99, "Rainfall (mm)": 0, "Temperature (°C)": 18.5, "Wind Direction (°)": 250, "Wind Speed (m/s)": 2.6 }
       },
       selected: { label: "Chiayi", src: "/a.jpg" },
       meta: {},
@@ -154,7 +155,7 @@ export default {
 }
 .switch-btn {
   height: 44px;           /* 跟 select 一樣高 */
-  font-size: 20px;
+  font-size: 18px;
   padding: 0 22px;        /* 舒服的左右邊界 */
   border-radius: 8px;
   border: 1.5px solid #bbb;
@@ -182,8 +183,9 @@ export default {
 }
 .preview-image {
   width: 100%;
-  max-width: 480px;
-  height: 300px;
+  max-width: 600px;
+  min-width: 500px;
+  height: 450px;
   object-fit: cover;
   border-radius: 18px;
   border: 1.5px solid #ccc;
