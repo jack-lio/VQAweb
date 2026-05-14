@@ -1,0 +1,10 @@
+services:
+  vqaweb:
+    build:
+      context: ..
+      dockerfile: cloud-run/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      BACKEND_PORT: "3000"
