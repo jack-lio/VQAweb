@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 from torchvision import models, transforms
 from m_model import CNN, TabularMLP
-from torchvision import models, transforms
+
 class FeatureManager():
     def __init__(self, args: dict):
         self.args = args
@@ -17,7 +17,7 @@ class FeatureManager():
             print("GPU available, use GPU")
 
         if self.args['feature_type'] == 'mobilenet_v2':
-            self.model = models.mobilenet_v2(pretrained=True)
+            self.model = models.mobilenet_v2(weights=None)
             self.model.classifier = self.model.classifier[:-1]
             self.model = self.model.to(self.device)
             self.model.eval()
