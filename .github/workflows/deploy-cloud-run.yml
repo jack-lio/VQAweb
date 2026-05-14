@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - AQI
+      - local-docker-ci
   workflow_dispatch:
 
 jobs:
