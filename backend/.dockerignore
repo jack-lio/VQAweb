@@ -1,0 +1,11 @@
+**/__pycache__
+*.py[cod]
+**/.git
+venv
+.venv
+.DS_Store
+vectorstore_db
+fed_multimodal_restcol/preprocess/output
+*.ipynb
+models
+data

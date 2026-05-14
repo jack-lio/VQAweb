@@ -1,0 +1,24 @@
+services:
+  frontend:
+    image: asia-docker.pkg.dev/project-176afda3-7b8c-4dee-b3f/taiind1/frontend:latest
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  backend:
+    image: asia-docker.pkg.dev/project-176afda3-7b8c-4dee-b3f/taiind1/backend:latest
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  nginx:
+    image: asia-docker.pkg.dev/project-176afda3-7b8c-4dee-b3f/taiind1/nginx:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

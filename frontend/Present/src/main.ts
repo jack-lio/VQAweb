@@ -1,47 +1,15 @@
 import { createApp } from "vue";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
 import App from "./App.vue";
-
 import Normal from "./pages/Normal.vue";
-//port Guide from "./pages/Guide.vue";
-//port GuideShow from "./pages/GuideShow.vue";
-//import SensorResult from "./pages/SensorResult.vue";
 import "./global.css";
 
-interface Route {
-  path: string;
-  name: string;
-  component: any;
-}
-
-const routes: Route[] = [
+const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: "Normal",
     component: Normal,
   },
-  /*{
-    path: "/result",
-    name: "Result",
-    component: Result,
-  },
-  */
-  /*
-  {
-    path: "/guide", 
-    name: "Guide", 
-    component: Guide,
-  },
-  {
-    path: "/guide-show", 
-    name: "GuideShow",   
-    component: GuideShow, 
-  },
-  {
-    path: "/sensor",
-    name: "SensorResult",
-    component: SensorResult,
-  }*/
 ];
 
 const router = createRouter({
@@ -61,7 +29,7 @@ router.beforeEach((toRoute, _, next) => {
 });
 
 const addMetaTag = (value: string) => {
-  const element = document.querySelector(`meta[name='description']`);
+  const element = document.querySelector("meta[name='description']");
   if (element) {
     element.setAttribute("content", value);
   }
