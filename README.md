@@ -157,7 +157,7 @@ The repository also includes:
 .github/workflows/deploy-cloud-run.yml
 ```
 
-This workflow runs when code is pushed to the `AQI` branch. It does not deploy to Cloud Run. It builds the local Docker Compose setup, starts it, and checks:
+This workflow runs when code is pushed to the `main`, `AQI`, or `local-docker-ci` branch. It does not deploy to Cloud Run. It builds the local Docker Compose setup, starts it, and checks:
 
 ```text
 http://localhost:8080/api/health

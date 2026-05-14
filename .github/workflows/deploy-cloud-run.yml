@@ -3,6 +3,7 @@ name: Local Docker CI
 on:
   push:
     branches:
+      - main
       - AQI
       - local-docker-ci
   workflow_dispatch:
