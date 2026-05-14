@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType } from "vue";
+import { defineComponent, type CSSProperties, type PropType } from "vue";
 
 export default defineComponent({
   name: "NextButton",
@@ -42,7 +42,7 @@ export default defineComponent({
         position: this.nextButtonPosition,
         top: this.nextButtonTop,
         left: this.nextButtonLeft,
-      };
+      } as CSSProperties;
     },
   },
 });
