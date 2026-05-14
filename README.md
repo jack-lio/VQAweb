@@ -149,6 +149,40 @@ Recommended trigger substitutions:
 
 Each push builds `cloud-run/Dockerfile`, pushes the image to Artifact Registry, and deploys it to Cloud Run.
 
+### CI/CD With GitHub Actions
+
+The repository also includes:
+
+```text
+.github/workflows/deploy-cloud-run.yml
+```
+
+This workflow deploys when code is pushed to the `AQI` branch.
+
+Create a GitHub repository secret named:
+
+```text
+GCP_SA_KEY
+```
+
+Use the JSON key for a Google Cloud service account that can push to Artifact Registry and deploy Cloud Run. For this project, the service account needs at least:
+
+```text
+roles/artifactregistry.writer
+roles/run.admin
+roles/iam.serviceAccountUser
+roles/storage.objectViewer
+roles/logging.logWriter
+```
+
+After the secret is set, pushing to `AQI` will run the GitHub Actions workflow:
+
+```bash
+git push origin AQI
+```
+
+If both Cloud Build Trigger and GitHub Actions are enabled, a single push can trigger two deployments. Keep only one enabled for normal use.
+
 ### Test The Cloud Run Image Locally
 
 ```bash
