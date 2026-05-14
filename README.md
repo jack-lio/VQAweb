@@ -149,7 +149,7 @@ Recommended trigger substitutions:
 
 Each push builds `cloud-run/Dockerfile`, pushes the image to Artifact Registry, and deploys it to Cloud Run.
 
-### CI/CD With GitHub Actions
+### Local Docker CI With GitHub Actions
 
 The repository also includes:
 
@@ -157,33 +157,41 @@ The repository also includes:
 .github/workflows/deploy-cloud-run.yml
 ```
 
-This workflow deploys when code is pushed to the `AQI` branch.
-
-Create a GitHub repository secret named:
+This workflow runs when code is pushed to the `AQI` branch. It does not deploy to Cloud Run. It builds the local Docker Compose setup, starts it, and checks:
 
 ```text
-GCP_SA_KEY
+http://localhost:8080/api/health
 ```
 
-Use the JSON key for a Google Cloud service account that can push to Artifact Registry and deploy Cloud Run. For this project, the service account needs at least:
-
-```text
-roles/artifactregistry.writer
-roles/run.admin
-roles/iam.serviceAccountUser
-roles/storage.objectViewer
-roles/logging.logWriter
-```
-
-After the secret is set, pushing to `AQI` will run the GitHub Actions workflow:
-
-```bash
-git push origin AQI
-```
-
-If both Cloud Build Trigger and GitHub Actions are enabled, a single push can trigger two deployments. Keep only one enabled for normal use.
+Cloud Run deployment is handled by the Cloud Build trigger. GitHub Actions is only used as a local-container CI check.
 
 ### Test The Cloud Run Image Locally
+
+The easiest local test uses the same single-container image as Cloud Run:
+
+```bash
+docker compose -f local-run/docker-compose.yml up --build
+```
+
+Then open:
+
+```text
+http://localhost:8080
+```
+
+Health check:
+
+```bash
+curl http://localhost:8080/api/health
+```
+
+Stop it with:
+
+```bash
+docker compose -f local-run/docker-compose.yml down
+```
+
+You can also build and run the image directly:
 
 ```bash
 docker build -f cloud-run/Dockerfile -t vqaweb-cloudrun .
