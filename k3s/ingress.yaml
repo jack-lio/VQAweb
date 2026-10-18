@@ -1,0 +1,17 @@
+# k3s ships Traefik as its ingress controller, listening on the node's port 80.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aqi
+spec:
+  ingressClassName: traefik
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: aqi-frontend
+                port:
+                  name: http

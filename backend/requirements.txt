@@ -5,5 +5,9 @@ uvicorn
 python-multipart
 numpy
 pillow
-torch==2.5.1+cpu
-torchvision==0.20.1+cpu
+# x86_64 uses the CPU-only builds. ARM64 (Raspberry Pi) builds are CPU-only
+# already and are published without the +cpu suffix.
+torch==2.5.1+cpu; platform_machine == "x86_64"
+torchvision==0.20.1+cpu; platform_machine == "x86_64"
+torch==2.5.1; platform_machine == "aarch64"
+torchvision==0.20.1; platform_machine == "aarch64"
