@@ -5,10 +5,10 @@ kind: Kustomization
 namespace: default
 
 resources:
-  - deployment.yaml
+- deployment.yaml
 
 # CI (.github/workflows/ci-cd.yml) sets newName/newTag to the image it pushed.
 images:
-  - name: vqaweb
-    newName: vqaweb
-    newTag: latest
+- name: vqaweb
+  newName: ghcr.io/jack-lio/vqaweb
+  newTag: "2121687"
