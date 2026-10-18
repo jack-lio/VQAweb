@@ -1,7 +1,7 @@
 # CI/CD for the AQI web app (single image: FastAPI + nginx, cloud-run/Dockerfile).
 #
 #   test    every push and PR: build the image, start it, wait for
-#           /api/health and run one real prediction on a sample image
+#           /api/health and check model A's prediction on a sample image
 #   push    on main: push the tested image to GHCR
 #   deploy  on main: set the new tag in k8s/kustomization.yaml and commit it.
 #           ArgoCD in minikube (Application "vqaweb" in jack-lio/sql-k8s)
@@ -66,13 +66,23 @@ jobs:
           docker logs vqaweb --tail 80
           exit 1
 
+      # Golden result for model A on backend/pic.jpg: a change in the feature
+      # code or the model file that alters predictions fails here, not in
+      # production. Update after deliberately retraining (training/README.md).
       - name: Predict on a sample image
         run: |
           curl -fsS http://localhost:8080/api/predict \
             -F image=@backend/pic.jpg -F model_name=A \
             -F rh=75 -F rainfall=0 -F temperature=25 -F wd_hr=90 -F ws_hr=2 \
             | tee prediction.json
-          python3 -c 'import json; r = json.load(open("prediction.json")); assert r, "empty prediction"'
+          python3 - <<'PY'
+          import json
+          r = json.load(open("prediction.json"))
+          assert r.get("model_version") == "taiwan_v1", r
+          assert r["pred_class"] == 2, r
+          assert abs(r["regression_value"] - 2.046) < 0.02, r
+          print("golden prediction ok")
+          PY
 
       - name: Container logs
         if: failure()
