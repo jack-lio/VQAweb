@@ -1,0 +1,111 @@
+# CI/CD for the AQI web app (single image: FastAPI + nginx, cloud-run/Dockerfile).
+#
+#   test    every push and PR: build the image, start it, wait for
+#           /api/health and run one real prediction on a sample image
+#   push    on main: push the tested image to GHCR
+#   deploy  on main: set the new tag in k8s/kustomization.yaml and commit it.
+#           ArgoCD in minikube (Application "vqaweb" in jack-lio/sql-k8s)
+#           notices the commit and rolls the Deployment.
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - k8s/kustomization.yaml   # the deploy job's own commit
+      - '**.md'
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/vqaweb
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          lfs: true
+
+      - name: Image tag
+        id: tag
+        run: echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: cloud-run/Dockerfile
+          load: true
+          tags: ${{ env.IMAGE }}:${{ steps.tag.outputs.tag }}
+          labels: org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Start the container
+        run: docker run -d --name vqaweb -p 8080:8080 "$IMAGE:${{ steps.tag.outputs.tag }}"
+
+      - name: Wait for /api/health
+        run: |
+          for _ in $(seq 1 90); do
+            curl -fsS http://localhost:8080/api/health && exit 0
+            sleep 2
+          done
+          docker logs vqaweb --tail 80
+          exit 1
+
+      - name: Predict on a sample image
+        run: |
+          curl -fsS http://localhost:8080/api/predict \
+            -F image=@backend/pic.jpg -F model_name=A \
+            -F rh=75 -F rainfall=0 -F temperature=25 -F wd_hr=90 -F ws_hr=2 \
+            | tee prediction.json
+          python3 -c 'import json; r = json.load(open("prediction.json")); assert r, "empty prediction"'
+
+      - name: Container logs
+        if: failure()
+        run: docker logs vqaweb --tail 200
+
+      - name: Push to GHCR
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker push "$IMAGE:${{ steps.tag.outputs.tag }}"
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Point k8s/kustomization.yaml at the new image
+        env:
+          TAG: ${{ needs.build.outputs.tag }}
+        run: |
+          cd k8s
+          kustomize edit set image "vqaweb=${IMAGE}:${TAG}"
+          git diff
+
+      # Commits made with GITHUB_TOKEN do not trigger another workflow run.
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Deploy vqaweb image ${{ needs.build.outputs.tag }}"
+          git pull --rebase origin main
+          git push origin HEAD:main

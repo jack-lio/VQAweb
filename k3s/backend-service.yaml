@@ -1,0 +1,13 @@
+# Always deployed, even while backend.yaml is disabled: nginx resolves this
+# name at startup and would refuse to start if it did not exist.
+apiVersion: v1
+kind: Service
+metadata:
+  name: aqi-backend
+spec:
+  selector:
+    app: aqi-backend
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http

@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aqi-frontend
+  labels:
+    app: aqi-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aqi-frontend
+  template:
+    metadata:
+      labels:
+        app: aqi-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: aqi-frontend
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: aqi-frontend-nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aqi-frontend
+spec:
+  selector:
+    app: aqi-frontend
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
