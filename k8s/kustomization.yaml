@@ -11,4 +11,4 @@ resources:
 images:
 - name: vqaweb
   newName: ghcr.io/jack-lio/vqaweb
-  newTag: 39ba003
+  newTag: ea0d056
